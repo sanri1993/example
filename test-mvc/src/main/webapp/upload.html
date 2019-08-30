@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>文件上传</title>
+</head>
+<body>
+    <fieldset>
+        <legend>单文件上传</legend>
+        <div >
+            <input type="file" name="file" />
+        </div>
+        <div ><button class="">上传</button></div>
+        <div><label for="">进度：<b></b></label><progress value="0" max="100" ></progress></div>
+    </fieldset>
+
+    <fieldset>
+        <legend>多文件上传</legend>
+        <div >
+            <input type="file" name="file" multiple />
+        </div>
+        <div ><button class="">上传</button></div>
+        <div><label for="">进度：<b></b></label><progress value="0" max="100" ></progress></div>
+    </fieldset>
+
+<script src="jquery-1.8.3.min.js"></script>
+<script>
+$(function () {
+    $('input[type=file]').bind('change',function () {
+        var $fieldset = $(this).closest('fieldset');
+        var files = this.files;
+        var totalLength = 0;
+        for(var i=0;i<files.length;i++){
+            totalLength += files[i].size;
+        }
+        var $process = $fieldset.find('progress');
+        $process.attr('max',totalLength);
+    });
+
+    $('button').bind('click',function () {
+        var $fieldset = $(this).closest('fieldset') ;
+        var $files = $fieldset.find('input[type=file]');
+        var $process = $fieldset.find('progress');
+
+        var formData = new FormData();
+        var totalFileSize = 0;
+        for (var i = 0; i < $files.size(); i++) {
+            var domfile = $files[i];
+            var nameKey = $files.eq(i).attr('name');
+
+            for (var j=0;j<domfile.files.length;j++) {
+                formData.append(nameKey,domfile.files[j]);
+                totalFileSize++;
+            }
+        }
+
+
+        ajaxUpload(formData,$fieldset,totalFileSize);
+
+    });
+    
+    function progressFunction(event) {
+        // console.log(event)
+        var $currentFieldset = arguments.callee.current;
+        $currentFieldset.find('progress').attr('value',event.loaded);
+    }
+
+    function ajaxUpload(formData,$fieldset,totalFileSize) {
+        $.ajax({
+            url: totalFileSize == 1 ?  '/upload/single':'/upload/multi',
+            cache: false,
+            type: "POST",
+            data: formData,
+            dateType:'json',
+            processData:false,
+            contentType:false,
+            xhr: function(){ //获取ajaxSettings中的xhr对象，为它的upload属性绑定progress事件的处理函数
+               var  myXhr = $.ajaxSettings.xhr();
+                if( myXhr.upload) {
+                    //绑定progress事件的回调函数
+                    progressFunction.current = $fieldset;
+                    myXhr.upload.addEventListener("progress",progressFunction, false);
+                }
+                return myXhr; //xhr对象返回给jQuery使用
+            },
+            error: function(request) {
+                alert("Connection error");
+            },
+            success: function(data) {
+                console.log(data)
+            }
+        });
+    }
+});
+</script>
+</body>
+</html>
