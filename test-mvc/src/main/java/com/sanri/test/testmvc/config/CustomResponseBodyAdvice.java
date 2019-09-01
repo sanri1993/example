@@ -1,6 +1,7 @@
 package com.sanri.test.testmvc.config;
 
 import com.alibaba.fastjson.JSONObject;
+import com.sanri.test.testmvc.dto.ResultEntity;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.ServerHttpRequest;
@@ -26,8 +27,17 @@ public class CustomResponseBodyAdvice implements ResponseBodyAdvice {
     @Override
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
         Executable executable = returnType.getExecutable();
+        if(executable.getDeclaringClass() == GlobalExceptionHandler.class){
+            //如果是出异常了，直接返回错误处理
+            return body;
+        }
+
         AnnotatedType annotatedReturnType = executable.getAnnotatedReturnType();
         Type type = annotatedReturnType.getType();
-        return JSONObject.parseObject("{\"result\":0}");
+        if(type == Void.TYPE){
+            // 空返回直接返回成功
+            return ResultEntity.ok();
+        }
+        return body;
     }
 }
