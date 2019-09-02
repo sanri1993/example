@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sanri.test.testmybatis.mapper.BatchMapper">
+    <!-- base result map -->
+    <resultMap id="BaseResultMap" type="com.sanri.test.testmybatis.po.Batch">
+        <result column="date" jdbcType="TIMESTAMP" property="date"/>
+        <result column="address" jdbcType="VARCHAR" property="address"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="success" jdbcType="BIT" property="success"/>
+        <result column="idcard" jdbcType="CHAR" property="idcard"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="job" jdbcType="VARCHAR" property="job"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="sal" jdbcType="DECIMAL" property="sal"/>
+        <result column="status" jdbcType="VARCHAR" property="status"/>
+    </resultMap>
+
+    <!-- base column list -->
+    <sql id="columns"> `date`,address,phone,success,idcard,`name`,id,job,email,sal,status </sql>
+
+</mapper>

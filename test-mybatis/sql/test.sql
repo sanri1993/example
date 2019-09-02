@@ -1,13 +1,18 @@
 DROP TABLE IF EXISTS `batch`;
-CREATE TABLE `batch`  (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '测试字符串',
-  `date` datetime(0) NULL DEFAULT NULL COMMENT '测试日期值',
-  `sal` decimal(10, 2) NULL DEFAULT NULL COMMENT '测试double 值',
-  `status` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '测试枚举值',
-  `success` bit(1) NULL DEFAULT NULL COMMENT '测试bool 值',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '测试批量添加' ROW_FORMAT = Compact;
+CREATE TABLE `batch` (
+ `id` int(11) NOT NULL AUTO_INCREMENT,
+ `name` varchar(64) DEFAULT NULL COMMENT '测试字符串',
+ `date` datetime DEFAULT NULL COMMENT '测试日期值',
+ `sal` decimal(10,2) DEFAULT NULL COMMENT '测试double 值',
+ `status` varchar(20) DEFAULT NULL COMMENT '测试枚举值',
+ `success` bit(1) DEFAULT NULL COMMENT '测试bool 值',
+ `phone` varchar(20) DEFAULT NULL COMMENT '手机号',
+ `email` varchar(64) DEFAULT NULL COMMENT '邮件',
+ `idcard` char(18) DEFAULT NULL COMMENT '身份证',
+ `address` varchar(255) DEFAULT NULL COMMENT '家庭住址',
+ `job` varchar(64) DEFAULT NULL COMMENT '职业',
+ PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=103401 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='测试批量添加';
 
 -- ----------------------------
 -- Records of batch
