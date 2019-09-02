@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sanri.mapper.DeviceLoginMapper">
+  <resultMap id="BaseResultMap" type="com.sanri.pojo.DeviceLogin">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="d_device_id" jdbcType="INTEGER" property="dDeviceId" />
+    <result column="sn" jdbcType="VARCHAR" property="sn" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="createtime" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="lastLoginTime" jdbcType="TIMESTAMP" property="lastLoginTime" />
+    <result column="lastGprsTime" jdbcType="TIMESTAMP" property="lastGprsTime" />
+    <result column="lastvilidtime" jdbcType="TIMESTAMP" property="lastvilidtime" />
+    <result column="lastRtTrack" jdbcType="TIMESTAMP" property="lastRtTrack" />
+    <result column="firsthistrack" jdbcType="TIMESTAMP" property="firstHisTrack" />
+    <result column="firstlogintime" jdbcType="TIMESTAMP" property="firstLoginTime" />
+    <result column="devicestatus" jdbcType="INTEGER" property="deviceStatus" />
+    <result column="locatestatus" jdbcType="INTEGER" property="locateStatus" />
+    <result column="subSnSwitchStatus" jdbcType="INTEGER" property="subSnSwitchStatus" />
+    <result column="subSnTime" jdbcType="TIMESTAMP" property="subSnTime" />
+    <result column="speed" jdbcType="INTEGER" property="speed" />
+  </resultMap>
+
+  <update id="batchUpdate">
+    create temporary table d_device_login_tmp_#{timestamp}(sn varchar(20) primary key,
+    `status` int(11)  DEFAULT NULL,
+    `lastLoginTime` datetime  DEFAULT NULL,
+    `lastGprsTime` datetime  DEFAULT NULL,
+    `lastvilidtime` datetime  DEFAULT NULL,
+    `lastRtTrack` datetime  DEFAULT NULL,
+    `firsthistrack` datetime  DEFAULT NULL,
+    `firstlogintime` datetime  DEFAULT NULL,
+    `devicestatus` int(1)  DEFAULT NULL,
+    `locatestatus` int(1)  DEFAULT NULL,
+    `subSnSwitchStatus` int(1)  DEFAULT NULL,
+    `subSnTime` datetime  DEFAULT NULL,
+    `speed` int(11)  DEFAULT NULL );
+
+    insert into d_device_login_tmp_#{timestamp}
+    (sn,`status`,lastLoginTime,lastGprsTime,lastvilidtime,lastRtTrack,
+    firsthistrack,firstlogintime,devicestatus,locatestatus,subSnSwitchStatus,subSnTime,
+    speed) values
+    <foreach collection="deviceLogins"  item="deviceLogin" separator=",">
+      (#{deviceLogin.sn},#{deviceLogin.status},#{deviceLogin.lastLoginTime},
+      #{deviceLogin.lastGprsTime},#{deviceLogin.lastvilidtime},#{deviceLogin.lastRtTrack},
+      #{deviceLogin.firstHisTrack},#{deviceLogin.firstLoginTime},#{deviceLogin.deviceStatus},
+      #{deviceLogin.locateStatus},#{deviceLogin.subSnSwitchStatus},#{deviceLogin.subSnTime},
+      #{deviceLogin.speed})
+    </foreach>
+    ;
+  </update>
+
+  <insert id="batchInsertDeviceLogin">
+    select NOW()
+  </insert>
+
+  <select id="selectDeviceLoginBySn" resultMap="BaseResultMap" >
+    select * from d_device_login where sn = #{sn} order by createtime desc limit 0,1;
+  </select>
+</mapper>

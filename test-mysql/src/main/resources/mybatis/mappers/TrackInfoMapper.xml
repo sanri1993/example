@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sanri.mapper.TrackInfoMapper">
+    <resultMap id="BaseResultMap" type="com.sanri.pojo.TrackInfo">
+        <id column="trackerId" property="id" jdbcType="INTEGER"/>
+        <result column="sn" property="sn" jdbcType="VARCHAR"/>
+        <result column="imei" property="imei" jdbcType="VARCHAR" />
+        <result column="imsi" property="imsi" jdbcType="VARCHAR"/>
+        <result column="iccid" property="iccid" jdbcType="VARCHAR"/>
+        <result column="simPhone" property="simPhone" jdbcType="VARCHAR"/>
+        <result column="isActive" property="isActive" jdbcType="INTEGER"/>
+        <result column="activeDate" property="activeDate" jdbcType="TIMESTAMP"/>
+        <result column="checkCode" property="checkCode" jdbcType="VARCHAR"/>
+        <result column="modelId" property="modelId" jdbcType="INTEGER"/>
+        <result column="d_LoginUserId" property="loginUserId" jdbcType="INTEGER"/>
+        <result column="issub" property="issub" jdbcType="INTEGER"/>
+        <result column="vehicleId" property="vehicleId" jdbcType="INTEGER"/>
+        <result column="createtime" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="updateTime" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="userId" property="userId" jdbcType="INTEGER"/>
+        <result column="soft_Version" property="softVersion" jdbcType="VARCHAR" />
+        <result column="deviceId" property="deviceId" jdbcType="INTEGER" />
+        <result column="source" property="source" jdbcType="INTEGER" />
+        <result column="networkCardNubmer" property="networkCardNubmer" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        trackerId, sn,imei, imsi, iccid, simPhone, isActive, activeDate,
+        checkCode, modelId, userId, createtime, updateTime, d_LoginUserId, issub, vehicleId,soft_Version,deviceId,source,networkCardNubmer
+    </sql>
+
+    <select id="selectBySn" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/> from d_track_info where sn = #{sn} order by createtime desc limit 0 ,1;
+    </select>
+    
+    <update id="updateDeviceTime">
+      update d_track_info set updateTime = NOW() where sn = #{sn}
+    </update>
+    
+    <update id="updateDeviceTimeList">
+      <foreach collection="subTrackInfos"  item="trackInfo">
+        update d_track_info set updateTime = NOW() where sn = #{trackInfo.sn};
+      </foreach>
+    </update>
+    
+    <update id="updateUserTmpTable">
+      create temporary table d_track_info_tmp_#{timestamp}(sn varchar(20) primary key,updateTime datetime);
+      insert into d_track_info_tmp_#{timestamp} values 
+      <foreach collection="subTrackInfos"  item="trackInfo" separator=",">
+         (#{trackInfo.sn},NOW())
+      </foreach>
+      ;
+      update d_track_info t, d_track_info_tmp_#{timestamp} tmp set t.updateTime = tmp.updateTime where t.sn=tmp.sn;
+    </update>
+    
+    <insert id="insertOne">
+      create temporary table d_track_info_tmp(sn varchar(20) primary key,updateTime datetime,source int(11));
+      insert into d_track_info_tmp(sn,updateTime,source) values (#{trackInfo.sn},#{trackInfo.updateTime},#{trackInfo.source});
+    </insert>
+    
+    
+    <update id="updateUserInsert">
+     INSERT INTO `d_track_info` (`trackerId`, sn,updateTime) VALUES
+       <foreach collection="trackInfos"  item="trackInfo" separator=",">
+         (#{trackInfo.id},#{trackInfo.sn},NOW())
+      </foreach>
+      on DUPLICATE key update updateTime=values(updateTime);
+    </update>
+</mapper>

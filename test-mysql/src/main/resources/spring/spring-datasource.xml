@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       default-autowire="byName"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans      
+      http://www.springframework.org/schema/beans/spring-beans-3.0.xsd              
+     ">
+  
+  <!-- 配置数据源 -->
+  <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+    <!-- 基本属性 url、user、password -->
+    <property name="url" value="${insurance.url}" />
+    <property name="username" value="${insurance.user}" />
+    <property name="password" value="${insurance.password}" />
+
+    <!-- 配置初始化大小、最小、最大 -->
+    <property name="initialSize" value="1" />
+    <property name="minIdle" value="5" />
+    <property name="maxActive" value="20" />
+
+    <!-- 配置获取连接等待超时的时间 -->
+    <property name="maxWait" value="60000" />
+
+    <!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+    <property name="timeBetweenEvictionRunsMillis" value="60000" />
+
+    <!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+    <property name="minEvictableIdleTimeMillis" value="300000" />
+
+    <property name="validationQuery" value="select 1 " />
+    <property name="testWhileIdle" value="true" />
+    <property name="testOnBorrow" value="false" />
+    <property name="testOnReturn" value="false" />
+
+    <!-- 配置监控统计拦截的filters，去掉后监控界面sql无法统计 -->
+    <property name="filters" value="stat" />
+  </bean>
+  
+  <!-- mybatis sqlSessionFactory 配置 -->
+  <bean id="mysqlSessionFactory" class="com.sanri.CustomerSqlSessionFactoryBean">
+    <property name="configLocation" value="classpath:mybatis/mybatis-config-all.xml" />
+    <property name="dataSource" ref="dataSource" />
+    <property name="mapperLocations" value="classpath:mybatis/mappers/*.xml" />
+  </bean>
+  
+  <bean class="tk.mybatis.spring.mapper.MapperScannerConfigurer">
+    <property name="annotationClass" value="org.springframework.stereotype.Repository" />
+    <property name="basePackage" value="com.sanri.mapper" />
+    <!-- 这里使用 sqlSessionFactoryBeanName 防止bean 提前初始化导致datasource的用户名,密码,连接串属性未注入 -->
+    <property name="sqlSessionFactoryBeanName" value="mysqlSessionFactory" />
+    <property name="markerInterface" value="tk.mybatis.mapper.common.BaseMapper"/>
+  </bean>
+</beans>
