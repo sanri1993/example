@@ -4,15 +4,17 @@ import com.sanri.test.testmybatis.enums.BatchStatus;
 import com.sanri.test.testmybatis.mapper.BatchMapper;
 import com.sanri.test.testmybatis.mapper.EmpMapper;
 import com.sanri.test.testmybatis.po.Batch;
-import com.sanri.test.testmybatis.po.Emp;
+import com.sanri.test.testmybatis.po.EmpDept;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import tk.mybatis.mapper.entity.Example;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,8 +33,11 @@ public class TestMybatisApplicationTests {
 
     @Test
     public void contextLoads() {
-        List<Emp> emps = empMapper.selectAll();
-        System.out.println(emps);
+//        List<Emp> emps = empMapper.selectAll();
+//        System.out.println(emps);
+
+        List<Batch> batches = batchMapper.selectAll();
+        System.out.println(batches.size());
     }
 
     /**
@@ -41,12 +46,27 @@ public class TestMybatisApplicationTests {
     @Test
     public void testTypeHandler(){
         Batch batch = new Batch();
-        batch.setDate(new Date());
+        batch.setBirthday(new Date());
         batch.setName("sanri");
         batch.setSuccess(true);
         batch.setSal(22.25);
         batch.setStatus(BatchStatus.PUBLISH);
         batchMapper.insert(batch);
+    }
+
+    @Test
+    public void testQueryTimeInterceptor(){
+        Example example = new Example(Batch.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andLike("phone","176%");
+        List<Batch> batches = batchMapper.selectByExample(example);
+        System.out.println(batches.size());
+    }
+
+    @Test
+    public void testOne2One(){
+        EmpDept smith = batchMapper.selectOne2One("SMITH");
+        System.out.println(smith);
     }
 
     /**

@@ -3,20 +3,35 @@
 <mapper namespace="com.sanri.test.testmybatis.mapper.BatchMapper">
     <!-- base result map -->
     <resultMap id="BaseResultMap" type="com.sanri.test.testmybatis.po.Batch">
-        <result column="date" jdbcType="TIMESTAMP" property="date"/>
+        <result column="birthday" jdbcType="TIMESTAMP" property="date"/>
         <result column="address" jdbcType="VARCHAR" property="address"/>
         <result column="phone" jdbcType="VARCHAR" property="phone"/>
         <result column="success" jdbcType="BIT" property="success"/>
         <result column="idcard" jdbcType="CHAR" property="idcard"/>
         <result column="name" jdbcType="VARCHAR" property="name"/>
-        <id column="id" jdbcType="INTEGER" property="id"/>
         <result column="job" jdbcType="VARCHAR" property="job"/>
         <result column="email" jdbcType="VARCHAR" property="email"/>
         <result column="sal" jdbcType="DECIMAL" property="sal"/>
         <result column="status" jdbcType="VARCHAR" property="status"/>
+        <result column="deptNo" jdbcType="DECIMAL" property="deptNo"/>
+    </resultMap>
+
+    <resultMap id="EmpDeptResultMap" type="com.sanri.test.testmybatis.po.EmpDept" extends="BaseResultMap">
+        <association property="dept" javaType="com.sanri.test.testmybatis.po.Dept" >
+            <result column="loc" jdbcType="VARCHAR" property="loc"/>
+            <result column="dname" jdbcType="VARCHAR" property="dname"/>
+            <result column="deptNo" jdbcType="DECIMAL" property="deptNo"/>
+        </association>
     </resultMap>
 
     <!-- base column list -->
-    <sql id="columns"> `date`,address,phone,success,idcard,`name`,id,job,email,sal,status </sql>
+    <sql id="columns"> birthday,address,phone,success,idcard,`name`,id,job,email,sal,status </sql>
 
+    <select id="selectOne2One"  resultMap="EmpDeptResultMap">
+        select ename,comm,mgr,empno,job,hiredate,sal,
+        loc,dname,e.deptNo
+        from emp e
+        inner join dept d on d.deptNo = e.deptNo
+        where e.ename = #{ename}
+    </select>
 </mapper>

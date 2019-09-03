@@ -29,7 +29,7 @@ public class Batch implements Serializable{
 
 	// 测试日期值
 	@Column(name = "date")
-	private java.util.Date date;
+	private java.util.Date birthday;
 
 	// 家庭住址
 	@Column(name = "address")
@@ -70,8 +70,8 @@ public class Batch implements Serializable{
 	public Batch() {
 	}
 
-	public Batch(Date date, String address, String phone, Boolean success, String idcard, String name, String job, String email, Double sal, BatchStatus status) {
-		this.date = date;
+	public Batch(Date birthday, String address, String phone, Boolean success, String idcard, String name, String job, String email, Double sal, BatchStatus status) {
+		this.birthday = birthday;
 		this.address = address;
 		this.phone = phone;
 		this.success = success;

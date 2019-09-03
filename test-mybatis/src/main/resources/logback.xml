@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+
+    <property resource="application.properties"/>
+    <property name="APP_NAME" value="${spring.application.name}"/>
+    <property name="LOG_PATH" value="${logging.path}"/>
+    <contextName>${APP_NAME}</contextName>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [${APP_NAME}] [%thread] %-5level %logger{36} %n  [ %msg ] %n</pattern>
+            </pattern>
+        </layout>
+    </appender>
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <FileNamePattern>${LOG_PATH}.%d{yyyy-MM-dd}.%i</FileNamePattern>
+            <MaxHistory>15</MaxHistory>
+            <maxFileSize>200MB</maxFileSize>
+        </rollingPolicy>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} ${APP_NAME}] [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </layout>
+    </appender>
+
+<!--
+    <logger name="com.glsx.taxi.admin.permissionmng" level="debug" />
+
+-->
+    <logger name="org.apache.shiro" level="debug" />
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="FILE"/>
+    </root>
+</configuration>  
