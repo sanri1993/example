@@ -1,4 +1,4 @@
-package com.sanri.test.testrabbitmq;
+package com.sanri.test.testrabbitmq.dto;
 
 import com.sun.istack.internal.NotNull;
 import lombok.*;
@@ -16,5 +16,4 @@ public class SendBean implements Serializable {
     @NonNull
     private String name;
     private Date date;
-
 }

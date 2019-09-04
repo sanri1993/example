@@ -1,22 +1,26 @@
 package com.sanri.test.testrabbitmq;
 
-import org.springframework.amqp.core.Message;
+import com.sanri.test.testrabbitmq.dto.SendBean;
 import org.springframework.amqp.rabbit.annotation.*;
-import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
-import org.springframework.amqp.support.converter.MessageConverter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.converter.MappingJackson2MessageConverter;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
-
-import java.io.Serializable;
 
 @Component
 public class InfoReceiver {
-
-
+    /**
+     * @param sendBean
+     */
     @RabbitListener(queues = "test")
-    public void onMessage(SendBean sendBean){
-        System.out.println(sendBean);
+    public void simple(SendBean sendBean){
+        System.out.println("test:"+sendBean);
+    }
+
+    @RabbitListener(queues = "common_queue")
+    public void commonQueue(SendBean sendBean) {
+        System.out.println("common:"+sendBean);
+    }
+
+    @RabbitListener(queues = "error_queue")
+    public void errorQueue(SendBean sendBean) {
+        System.out.println("error:"+sendBean);
     }
 }
