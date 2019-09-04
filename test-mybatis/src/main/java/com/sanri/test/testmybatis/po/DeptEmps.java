@@ -3,11 +3,11 @@ package com.sanri.test.testmybatis.po;
 import lombok.Data;
 import lombok.ToString;
 
-/**
- * mybatis 一对一关联查询
- */
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @ToString(callSuper = true)
-public class EmpDept  extends Emp{
-    private Dept dept;
+public class DeptEmps extends Dept{
+    private List<Emp> emps;
 }

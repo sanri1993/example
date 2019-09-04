@@ -28,7 +28,7 @@ public class Batch implements Serializable{
 	private Integer id;
 
 	// 测试日期值
-	@Column(name = "date")
+	@Column(name = "birthday")
 	private java.util.Date birthday;
 
 	// 家庭住址

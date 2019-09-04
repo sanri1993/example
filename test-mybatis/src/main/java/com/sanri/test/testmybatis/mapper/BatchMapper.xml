@@ -3,7 +3,7 @@
 <mapper namespace="com.sanri.test.testmybatis.mapper.BatchMapper">
     <!-- base result map -->
     <resultMap id="BaseResultMap" type="com.sanri.test.testmybatis.po.Batch">
-        <result column="birthday" jdbcType="TIMESTAMP" property="date"/>
+        <result column="birthday" jdbcType="TIMESTAMP" property="birthday"/>
         <result column="address" jdbcType="VARCHAR" property="address"/>
         <result column="phone" jdbcType="VARCHAR" property="phone"/>
         <result column="success" jdbcType="BIT" property="success"/>
@@ -13,25 +13,26 @@
         <result column="email" jdbcType="VARCHAR" property="email"/>
         <result column="sal" jdbcType="DECIMAL" property="sal"/>
         <result column="status" jdbcType="VARCHAR" property="status"/>
-        <result column="deptNo" jdbcType="DECIMAL" property="deptNo"/>
-    </resultMap>
-
-    <resultMap id="EmpDeptResultMap" type="com.sanri.test.testmybatis.po.EmpDept" extends="BaseResultMap">
-        <association property="dept" javaType="com.sanri.test.testmybatis.po.Dept" >
-            <result column="loc" jdbcType="VARCHAR" property="loc"/>
-            <result column="dname" jdbcType="VARCHAR" property="dname"/>
-            <result column="deptNo" jdbcType="DECIMAL" property="deptNo"/>
-        </association>
     </resultMap>
 
     <!-- base column list -->
     <sql id="columns"> birthday,address,phone,success,idcard,`name`,id,job,email,sal,status </sql>
 
-    <select id="selectOne2One"  resultMap="EmpDeptResultMap">
-        select ename,comm,mgr,empno,job,hiredate,sal,
-        loc,dname,e.deptNo
-        from emp e
-        inner join dept d on d.deptNo = e.deptNo
-        where e.ename = #{ename}
-    </select>
+    <insert id="batchUpdateUseInsert" >
+        insert into batch(birthday,address,phone,success,idcard,`name`,id,job,email,sal,status) values
+        <foreach collection="batchSubList" separator="," item="batchItem">
+            (#{batchItem.birthday},#{batchItem.address},#{batchItem.phone},#{batchItem.success},#{batchItem.idcard},#{batchItem.name},#{batchItem.id},#{batchItem.job},#{batchItem.email},#{batchItem.sal},#{batchItem.status})
+        </foreach>
+        on DUPLICATE key update phone=values(phone);
+    </insert>
+
+    <update id="batchUpdateUseTmpTable" >
+        create temporary table batch_tmp_#{timestamp}(id int primary key,phone varchar(20));
+        insert into batch_tmp_#{timestamp} values
+        <foreach collection="batchSubList"  item="batchItem" separator=",">
+            (#{batchItem.id},#{batchItem.phone})
+        </foreach>
+        ;
+        update batch t, batch_tmp_#{timestamp} tmp set t.phone = tmp.phone where t.id=tmp.id;
+    </update>
 </mapper>

@@ -33,5 +33,5 @@ public class Dept implements Serializable{
 	private String dname;
 	// 部门编号
 	@Column(name="deptno",length=0)
-	private Double deptNo;
+	private String deptNo;
 }

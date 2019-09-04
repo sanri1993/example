@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sanri.test.testmybatis.mapper.EmpMapper">
+    <resultMap id="EmpResultMap" type="com.sanri.test.testmybatis.po.Emp">
+        <result column="ename" jdbcType="VARCHAR" property="ename"/>
+        <result column="comm" jdbcType="DECIMAL" property="comm"/>
+        <result column="mgr" jdbcType="DECIMAL" property="mgr"/>
+        <result column="empno" jdbcType="DECIMAL" property="empNo"/>
+        <result column="job" jdbcType="VARCHAR" property="job"/>
+        <result column="hiredate" jdbcType="TIMESTAMP" property="hiredate"/>
+        <result column="deptno" jdbcType="VARCHAR" property="deptNo"/>
+        <result column="sal" jdbcType="DECIMAL" property="sal"/>
+    </resultMap>
+
+    <resultMap id="DeptResultMap" type="com.sanri.test.testmybatis.po.Dept">
+        <result column="loc" jdbcType="VARCHAR" property="loc"/>
+        <result column="dname" jdbcType="VARCHAR" property="dname"/>
+        <result column="deptNo" jdbcType="VARCHAR" property="deptNo"/>
+    </resultMap>
+
+    <resultMap id="EmpDeptResultMap" type="com.sanri.test.testmybatis.po.EmpDept" extends="EmpResultMap">
+        <association property="dept" javaType="com.sanri.test.testmybatis.po.Dept" resultMap="DeptResultMap" />
+    </resultMap>
+
+    <resultMap id="DeptEmpsResultMap" type="com.sanri.test.testmybatis.po.DeptEmps" extends="DeptResultMap">
+        <collection property="emps" resultMap="EmpResultMap"/>
+    </resultMap>
+
+    <resultMap id="DeptEmpsResultMapLazy" type="com.sanri.test.testmybatis.po.DeptEmps" extends="DeptResultMap">
+        <collection property="emps"   select="com.sanri.test.testmybatis.mapper.EmpMapper.selectEmpsByDeptNo" column="{deptNo=deptNo}" fetchType="lazy"/>
+    </resultMap>
+
+    <select id="selectOne2One"  resultMap="EmpDeptResultMap">
+        select ename,comm,mgr,empno,job,hiredate,sal,
+        loc,dname,d.deptNo
+        from emp e
+        inner join dept d on d.deptNo = e.deptNo
+        where e.ename = #{ename}
+    </select>
+
+    <select id="selectOne2Multi" resultMap="DeptEmpsResultMap">
+        select loc,dname,d.deptNo,
+        ename,comm,mgr,empno,job,hiredate,sal
+        from dept d
+        inner join emp e on e.deptNo = d.deptNo
+        where d.deptNo = #{deptNo}
+    </select>
+
+    <select id="selectOne2MultiLazy" resultMap="DeptEmpsResultMapLazy">
+        select * from dept where deptNo = #{deptNo}
+    </select>
+    <select id="selectEmpsByDeptNo" resultMap="EmpResultMap">
+        select * from emp where deptNo=#{deptNo}
+    </select>
+</mapper>

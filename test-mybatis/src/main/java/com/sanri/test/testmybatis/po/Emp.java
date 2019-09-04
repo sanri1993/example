@@ -24,30 +24,29 @@ import java.util.Date;
 @Entity
 @Table(name="emp")
 @Data
-@ToString
 public class Emp implements Serializable{
 	// 员工姓名
 	@Column(name="ename",length=10)
-	private String ename;
+	protected String ename;
 	// 奖金
 	@Column(name="comm",length=0)
-	private Double comm;
+	protected Double comm;
 	// 上级编号
 	@Column(name="mgr",length=0)
-	private Double mgr;
+	protected Double mgr;
 	// 员工编号
 	@Column(name="empno",length=0)
-	private Double empNo;
+	protected Double empNo;
 	// 职业
 	@Column(name="job",length=9)
-	private String job;
+	protected String job;
 	// 雇佣日期
 	@Column(name="hiredate",length=0)
-	private Date hiredate;
+	protected Date hiredate;
 	// 部门编号
 	@Column(name="deptno",length=0)
-	private Double deptNo;
+	protected String deptNo;
 	// 薪水
 	@Column(name="sal",length=0)
-	private Double sal;
+	protected Double sal;
 }
