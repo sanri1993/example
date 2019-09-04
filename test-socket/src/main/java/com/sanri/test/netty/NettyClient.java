@@ -29,6 +29,7 @@ public class NettyClient {
                     pipeline.addLast(new StringEncoder());
                     pipeline.addLast(new StringDecoder());
                     pipeline.addLast(new ClientHandler());
+
                 }
             });
 
