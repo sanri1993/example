@@ -10,6 +10,7 @@ import com.sanri.test.testmybatis.po.EmpDept;
 import com.sanri.test.testmybatis.utils.ListSplitIterator;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.lang3.time.StopWatch;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,10 +19,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import tk.mybatis.mapper.entity.Example;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.ListIterator;
+import java.text.ParseException;
+import java.util.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -41,6 +40,31 @@ public class TestMybatisApplicationTests {
 
         List<Batch> batches = batchMapper.selectAll();
        System.err.println(batches.size());
+    }
+
+    @Test
+    public void testDateParam() throws ParseException {
+        Date date = DateUtils.parseDate("1983-01-12", "yyyy-MM-dd");
+        List<Emp> emps = empMapper.dateParam(date);
+        System.out.println(emps);
+    }
+
+    @Test
+    public void testEntityParam(){
+        Emp emp = new Emp();
+        emp.setEname("A");
+
+        List<Emp> emps = empMapper.selectEmpsUseParam(emp);
+        System.out.println(emps.size());
+    }
+
+    @Test
+    public void testMapParam(){
+        Map<String,Object> map = new HashMap<>();
+        map.put("ename","A");
+
+        List<Emp> emps = empMapper.selectEmpsUseMap(map);
+        System.out.println(emps.size());
     }
 
     /**

@@ -30,6 +30,10 @@
         <collection property="emps"   select="com.sanri.test.testmybatis.mapper.EmpMapper.selectEmpsByDeptNo" column="{deptNo=deptNo}" fetchType="lazy"/>
     </resultMap>
 
+    <select id="dateParam" resultMap="EmpResultMap">
+        select * from emp where hiredate &lt; #{birthday}
+    </select>
+
     <select id="selectOne2One"  resultMap="EmpDeptResultMap">
         select ename,comm,mgr,empno,job,hiredate,sal,
         loc,dname,d.deptNo
@@ -51,5 +55,29 @@
     </select>
     <select id="selectEmpsByDeptNo" resultMap="EmpResultMap">
         select * from emp where deptNo=#{deptNo}
+    </select>
+
+    <select id="selectEmpsUseParam" resultMap="EmpResultMap">
+        select * from emp
+        <where>
+            <if test="ename != null and ename != ''">
+                and ename like '%${ename}%'
+            </if>
+            <if test="deptNo != null and deptNo != ''">
+                and deptNo = #{deptNo}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectEmpsUseMap" resultMap="EmpResultMap">
+        select * from emp
+        <where>
+            <if test="ename != null and ename != ''">
+                and ename like '%${ename}%'
+            </if>
+            <if test="deptNo != null and deptNo != ''">
+                and deptNo = #{deptNo}
+            </if>
+        </where>
     </select>
 </mapper>

@@ -5,9 +5,16 @@ import com.sanri.test.testmybatis.po.Emp;
 import com.sanri.test.testmybatis.po.EmpDept;
 import tk.mybatis.mapper.common.Mapper;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public interface EmpMapper extends Mapper<Emp> {
+    /**
+     * 测试日期参数的传递
+     * @param birthday
+     */
+    List<Emp> dateParam(Date birthday);
     /**
      * 一对一查询
      * @param ename
@@ -36,4 +43,18 @@ public interface EmpMapper extends Mapper<Emp> {
      * @return
      */
     List<Emp> selectEmpsByDeptNo(String deptNo);
+
+    /**
+     * 使用 emp 中的属性进行查询
+     * @param emp
+     * @return
+     */
+    List<Emp> selectEmpsUseParam(Emp emp);
+
+    /**
+     * 使用 map 参数进行查询
+     * @param map
+     * @return
+     */
+    List<Emp> selectEmpsUseMap(Map<String,Object> map);
 }
